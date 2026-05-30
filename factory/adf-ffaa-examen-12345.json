@@ -1,0 +1,10 @@
+{
+	"name": "adf-ffaa-examen-12345",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Enabled",
+			"editable": true
+		}
+	},
+	"location": "brazilsouth"
+}
