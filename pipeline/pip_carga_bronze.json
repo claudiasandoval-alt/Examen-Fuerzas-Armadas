@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ds_sql_efectivos",
+				"name": "efectivos",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -55,11 +55,11 @@
 				]
 			},
 			{
-				"name": "ds_sql_movimientos_personal",
+				"name": "movimientos_personal",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "ds_sql_efectivos",
+						"activity": "efectivos",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -114,11 +114,11 @@
 				]
 			},
 			{
-				"name": "ds_sql_operaciones",
+				"name": "operaciones",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "ds_sql_movimientos_personal",
+						"activity": "movimientos_personal",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -173,11 +173,11 @@
 				]
 			},
 			{
-				"name": "ds_sql_unidades",
+				"name": "unidades",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "ds_sql_operaciones",
+						"activity": "operaciones",
 						"dependencyConditions": [
 							"Succeeded"
 						]
