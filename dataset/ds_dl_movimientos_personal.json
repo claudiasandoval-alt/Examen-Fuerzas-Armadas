@@ -1,0 +1,23 @@
+{
+	"name": "ds_dl_movimientos_personal",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_datalake_bronze",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "movimientos_personal.csv",
+				"fileSystem": "bronze"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
