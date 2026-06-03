@@ -1,0 +1,45 @@
+{
+	"name": "df_silver_unidades",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_dl_unidades",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_unidad as short,",
+				"          id_brigada as short,",
+				"          nombre as string,",
+				"          codigo as string,",
+				"          ciudad as string,",
+				"          departamento as string,",
+				"          tipo_cuartel as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(nombre = trim(regexReplace(nombre, '\\\\s+', ' ')),",
+				"          codigo = upper(trim(codigo)),",
+				"          ciudad = initCap(trim(ciudad)),",
+				"          departamento = initCap(trim(departamento)),",
+				"          tipo_cuartel = upper(trim(tipo_cuartel))) ~> derivedColumn1"
+			]
+		}
+	}
+}
