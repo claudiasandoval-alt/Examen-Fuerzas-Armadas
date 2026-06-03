@@ -1,0 +1,54 @@
+{
+	"name": "df_silver_operaciones",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_dl_operaciones",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_operacion as string,",
+				"          id_tipo as short,",
+				"          id_unidad_resp as short,",
+				"          id_zona as short,",
+				"          nombre_operacion as string,",
+				"          fecha_inicio as string,",
+				"          fecha_fin as string,",
+				"          efectivos_desplegados as string,",
+				"          vehiculos_utilizados as string,",
+				"          duracion_dias as string,",
+				"          costo_operacion as string,",
+				"          resultado as string,",
+				"          detenidos as string,",
+				"          area_km2 as string,",
+				"          incidentes as string,",
+				"          observaciones as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(fecha_inicio = coalesce(toDate(fecha_inicio, 'yyyy-MM-dd'), toDate(fecha_inicio, 'dd/MM/yyyy'), toDate(fecha_inicio, 'MM-dd-yyyy'), toDate(fecha_inicio, 'yyyy/MM/dd'), toDate(fecha_inicio, 'dd-MM-yyyy'), toDate(fecha_inicio, 'yyyyMMdd')),",
+				"          fecha_fin = coalesce(toDate(fecha_fin, 'yyyy-MM-dd'), toDate(fecha_fin, 'dd/MM/yyyy'), toDate(fecha_fin, 'MM-dd-yyyy'), toDate(fecha_fin, 'yyyy/MM/dd'), toDate(fecha_fin, 'dd-MM-yyyy'), toDate(fecha_fin, 'yyyyMMdd')),",
+				"          costo_operacion = iif(isNull(costo_operacion) || trim(toString(costo_operacion)) == '', toDecimal(0.0), toDecimal(regexReplace(toString(costo_operacion), '[^0-9.]', ''))),",
+				"          nombre_operacion = initCap(regexReplace(trim(nombre_operacion), '\\\\s+', ' ')),",
+				"          efectivos_desplegados = toInteger(regexReplace(toString(efectivos_desplegados), '[^0-9]', ''))) ~> derivedColumn1"
+			]
+		}
+	}
+}

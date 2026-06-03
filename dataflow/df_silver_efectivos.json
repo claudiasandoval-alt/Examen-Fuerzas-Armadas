@@ -1,0 +1,71 @@
+{
+	"name": "df_silver_efectivos",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_dl_efectivos",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_silver_efectivos",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_efectivo as short,",
+				"          id_especialidad as short,",
+				"          id_unidad_actual as short,",
+				"          id_rango_actual as short,",
+				"          nombre as string,",
+				"          ci as string,",
+				"          fecha_nacimiento as string,",
+				"          genero as string,",
+				"          departamento_origen as string,",
+				"          fecha_ingreso as string,",
+				"          estado as string,",
+				"          salario_mensual as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(ci = regexReplace(toString(ci), '[^0-9]', ''),",
+				"          fecha_nacimiento = coalesce(toDate(fecha_nacimiento, 'yyyy-MM-dd'), toDate(fecha_nacimiento, 'dd/MM/yyyy'), toDate(fecha_nacimiento, 'MM-dd-yyyy'), toDate(fecha_nacimiento, 'yyyy/MM/dd'), toDate(fecha_nacimiento, 'dd-MM-yyyy'), toDate(fecha_nacimiento, 'yyyyMMdd')),",
+				"          fecha_ingreso = coalesce(toDate(fecha_ingreso, 'yyyy-MM-dd'), toDate(fecha_ingreso, 'dd/MM/yyyy'), toDate(fecha_ingreso, 'MM-dd-yyyy'), toDate(fecha_ingreso, 'yyyy/MM/dd'), toDate(fecha_ingreso, 'dd-MM-yyyy'), toDate(fecha_ingreso, 'yyyyMMdd')),",
+				"          genero = case(in(['hombre', 'masculino', 'm', 'masc.', 'h'], lower(trim(genero))), 'Masculino', in(['mujer', 'femenino', 'f', 'fem.'], lower(trim(genero))), 'Femenino', 'N/D'),",
+				"          departamento_origen = case(in(['lp', 'la paz', 'l.p.', 'lapaz'], lower(trim(departamento_origen))), 'La Paz', in(['cbba', 'cbba.', 'cb', 'cochabamba'], lower(trim(departamento_origen))), 'Cochabamba', in(['or', 'oruro'], lower(trim(departamento_origen))), 'Oruro', in(['tj', 'tarija', 'tj.'], lower(trim(departamento_origen))), 'Tarija', in(['sc', 'scz', 'santa cruz', 'sta. cruz'], lower(trim(departamento_origen))), 'Santa Cruz', in(['bn', 'beni'], lower(trim(departamento_origen))), 'Beni', in(['ch', 'chuquisaca'], lower(trim(departamento_origen))), 'Chuquisaca', in(['pt', 'potosi', 'potosí', 'pt.'], lower(trim(departamento_origen))), 'Potosi', in(['pd', 'pando'], lower(trim(departamento_origen))), 'Pando', 'Otro'),",
+				"          estado = case(in(['act.', 'activo', 'activo.', 'act', 'actv', 'en actividad'], lower(trim(estado))), 'Activo', in(['inactivo', 'inact.', 'baja', 'dado de baja', 'b'], lower(trim(estado))), 'Inactivo', in(['en reserva', 'reserva'], lower(trim(estado))), 'Reserva', 'Desconocido'),",
+				"          salario_mensual = iif(isNull(salario_mensual) || trim(toString(salario_mensual)) == '', toDecimal(0.0), toDecimal(regexReplace(toString(salario_mensual), '[^0-9.]', '')))) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}
