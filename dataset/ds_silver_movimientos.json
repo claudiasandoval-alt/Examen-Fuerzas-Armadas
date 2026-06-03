@@ -1,0 +1,16 @@
+{
+	"name": "ds_silver_movimientos",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_destino_dw",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dw",
+			"table": "silver_movimientos"
+		}
+	}
+}

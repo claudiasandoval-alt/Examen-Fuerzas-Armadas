@@ -15,7 +15,15 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_silver_movimientos",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "derivedColumn1"
@@ -37,7 +45,20 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
-				"source1 derive() ~> derivedColumn1"
+				"source1 derive(fecha_movimiento = coalesce(     toDate(fecha_movimiento, 'yyyy/MM/dd'),     toDate(fecha_movimiento, 'dd-MM-yyyy'),     toDate(fecha_movimiento, 'MM-dd-yyyy'),     toDate(fecha_movimiento, 'yyyy-MM-dd') ),",
+				"          antiguedad_anios = toDecimal(     regexReplace(         regexReplace(             replace(lower(antiguedad_anios), 'doce', '12'),              '[^0-9.]', ''         ),          '\\\\.$', ''     ),      4, 1 ),",
+				"          salario_mensual = toDecimal(regexReplace(salario_mensual, '[^0-9.]', ''), 10, 2)) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
