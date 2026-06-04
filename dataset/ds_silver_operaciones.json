@@ -9,7 +9,7 @@
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "cw",
+			"schema": "dbo",
 			"table": "silver_operaciones"
 		}
 	}
