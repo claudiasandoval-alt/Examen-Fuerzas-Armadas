@@ -5,11 +5,14 @@
 			"referenceName": "ls_destino_dw",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "gold"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "dw",
+			"schema": "dbo",
 			"table": "dim_efectivo"
 		}
 	}
