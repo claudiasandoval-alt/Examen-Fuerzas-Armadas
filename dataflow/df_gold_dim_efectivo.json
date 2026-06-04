@@ -1,0 +1,78 @@
+{
+	"name": "df_gold_dim_efectivo",
+	"properties": {
+		"folder": {
+			"name": "gold"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_silver_efectivos",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_gold_dim_efectivo",
+						"type": "DatasetReference"
+					},
+					"name": "SinkGoldEfectivo"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_efectivo as short,",
+				"          id_especialidad as short,",
+				"          id_unidad_actual as short,",
+				"          id_rango_actual as short,",
+				"          nombre as string,",
+				"          ci as string,",
+				"          fecha_nacimiento as date,",
+				"          genero as string,",
+				"          departamento_origen as string,",
+				"          fecha_ingreso as date,",
+				"          estado as string,",
+				"          salario_mensual as decimal(10,2)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 select(mapColumn(",
+				"          id_efectivo,",
+				"          nombre,",
+				"          ci,",
+				"          fecha_nacimiento,",
+				"          genero,",
+				"          departamento_origen,",
+				"          fecha_ingreso,",
+				"          estado,",
+				"          salario_mensual",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SinkGoldEfectivo"
+			]
+		}
+	}
+}
