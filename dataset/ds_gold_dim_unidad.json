@@ -1,0 +1,16 @@
+{
+	"name": "ds_gold_dim_unidad",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_destino_dw",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "dim_unidad"
+		}
+	}
+}
